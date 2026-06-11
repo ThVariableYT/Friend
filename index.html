@@ -11,10 +11,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <style>
         :root {
-            --color-bg-deep: #060408;
-            --color-bg-dusk: #0c0812;
-            --color-bg-candle: #140b1b;
-            --color-bg-glow: #1e1026;
+            --color-bg-deep: #050307;
+            --color-bg-dusk: #0b0711;
+            --color-bg-candle: #120919;
+            --color-bg-glow: #1a0d24;
             --color-champagne: #f4ead4;
             --color-rose-gold: #e2ab95;
             --color-blush: #f8dad4;
@@ -99,6 +99,100 @@
             }
         }
 
+        .scroll-progress-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            z-index: 1001;
+            pointer-events: none;
+        }
+
+        .scroll-progress-line {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, var(--color-rose-gold), var(--color-champagne));
+            position: relative;
+        }
+
+        .scroll-progress-indicator {
+            position: absolute;
+            right: -5px;
+            top: -6px;
+            font-size: 10px;
+            color: var(--color-champagne);
+            text-shadow: 0 0 10px var(--color-rose-gold);
+            animation: progressSpin 8s linear infinite;
+        }
+
+        @keyframes progressSpin {
+            100% { transform: rotate(360deg); }
+        }
+
+        .audio-control-node {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            z-index: 1000;
+            background: rgba(20, 11, 27, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(248, 218, 212, 0.15);
+            border-radius: 40px;
+            padding: 0.7rem 1.4rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            cursor: pointer;
+            transition: var(--transition-fluid);
+        }
+
+        .audio-control-node:hover {
+            border-color: var(--color-rose-gold);
+            box-shadow: 0 0 20px rgba(226, 171, 149, 0.2);
+            transform: scale(1.03);
+        }
+
+        .audio-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: var(--color-champagne);
+            font-weight: 500;
+        }
+
+        .soundwave-bars {
+            display: flex;
+            align-items: flex-end;
+            gap: 3px;
+            height: 12px;
+            width: 15px;
+        }
+
+        .soundbar {
+            width: 2px;
+            background-color: var(--color-rose-gold);
+            height: 3px;
+            transition: height 0.3s ease;
+        }
+
+        .soundwave-bars.active .soundbar:nth-child(1) { animation: soundPulse 1.2s infinite alternate; }
+        .soundwave-bars.active .soundbar:nth-child(2) { animation: soundPulse 0.9s infinite alternate 0.2s; }
+        .soundwave-bars.active .soundbar:nth-child(3) { animation: soundPulse 1.4s infinite alternate 0.4s; }
+
+        @keyframes soundPulse {
+            0% { height: 3px; }
+            100% { height: 12px; }
+        }
+
+        .gold-gradient-text {
+            background: linear-gradient(135deg, var(--color-champagne) 0%, var(--color-rose-gold) 50%, var(--color-blush) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: inline-block;
+        }
+
         .aura-glow {
             position: absolute;
             width: 80vw;
@@ -151,6 +245,7 @@
             position: relative;
             z-index: 2;
             margin-bottom: 2rem;
+            perspective: 1000px;
         }
 
         .hero-name {
@@ -163,7 +258,6 @@
             text-shadow: 0 0 60px rgba(248, 218, 212, 0.25);
             text-transform: uppercase;
             opacity: 0;
-            transform: translateY(40px);
         }
 
         .hero-headline {
@@ -602,6 +696,50 @@
             transform: scale(1.08);
         }
 
+        .video-overlay-indicator {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(12, 8, 18, 0.65);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(248, 218, 212, 0.2);
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        .luxury-deck-card.active .video-overlay-indicator {
+            opacity: 1;
+        }
+
+        .video-indicator-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: var(--color-rose-gold);
+            animation: recordPulse 1s infinite alternate;
+        }
+
+        @keyframes recordPulse {
+            0% { transform: scale(0.8); opacity: 0.5; }
+            100% { transform: scale(1.2); opacity: 1; }
+        }
+
+        .video-indicator-text {
+            font-size: 0.6rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--color-champagne);
+            font-weight: 600;
+        }
+
         .card-content-wrapper {
             padding: 2.2rem;
             display: flex;
@@ -849,6 +987,21 @@
     <div class="cursor-ring" id="web-cursor"></div>
     <div class="cursor-point" id="web-cursor-dot"></div>
 
+    <div class="scroll-progress-container">
+        <div class="scroll-progress-line" id="scroll-line">
+            <div class="scroll-progress-indicator" id="scroll-dot">✦</div>
+        </div>
+    </div>
+
+    <div class="audio-control-node" id="ambient-audio-btn">
+        <div class="soundwave-bars" id="audio-bars">
+            <div class="soundbar"></div>
+            <div class="soundbar"></div>
+            <div class="soundbar"></div>
+        </div>
+        <span class="audio-label" id="audio-btn-label">Ambient Synth: Off</span>
+    </div>
+
     <canvas id="bg-grain-canvas"></canvas>
 
     <div class="aura-glow" style="top: -5%; left: 15%;"></div>
@@ -872,7 +1025,7 @@
                 <div class="narrative-content">
                     <h2 class="editorial-title">
                         <span>A Symphony of Grace</span>
-                        The Poetic Essence of Hetvi
+                        The Poetic Essence of <div class="gold-gradient-text">Hetvi</div>
                     </h2>
                     <p class="editorial-body">
                         True presence is never about demanding the gaze of a room; it is about gently changing the atmospheric pressure. Hetvi, you carry a quiet, high-end brilliance that is both comforting and completely mesmerizing. Your natural kindness forms a protective shelter around those fortunate enough to cross your path.
@@ -1001,37 +1154,37 @@
     <script>
         const memories = [
             {
-                image: "hetvi3.jpg",
-                title: "Golden Hour Revelations",
+                image: "MEMORY_IMAGE_1",
+                title: "MEMORY_TITLE_1",
                 text: "MEMORY_TEXT_1",
                 meta: "MEMORY_META_1"
             },
             {
-                image: "hetvi4.jpg",
-                title: "Goofyness in the Wild",
+                image: "MEMORY_IMAGE_2",
+                title: "MEMORY_TITLE_2",
                 text: "MEMORY_TEXT_2",
                 meta: "MEMORY_META_2"
             },
             {
-                image: "hetvi5.mp4",
-                title: "Melodic Laughter",
+                image: "MEMORY_IMAGE_3",
+                title: "MEMORY_TITLE_3",
                 text: "MEMORY_TEXT_3",
                 meta: "MEMORY_META_3"
             },
             {
-                image: "hetvi6.jpg",
+                image: "MEMORY_IMAGE_4",
                 title: "MEMORY_TITLE_4",
                 text: "MEMORY_TEXT_4",
                 meta: "MEMORY_META_4"
             },
             {
-                image: "hetvi7.jpg",
+                image: "MEMORY_IMAGE_5",
                 title: "MEMORY_TITLE_5",
                 text: "MEMORY_TEXT_5",
                 meta: "MEMORY_META_5"
             },
             {
-                image: "hetvi8.jpg",
+                image: "MEMORY_IMAGE_6",
                 title: "MEMORY_TITLE_6",
                 text: "MEMORY_TEXT_6",
                 meta: "MEMORY_META_6"
@@ -1077,17 +1230,31 @@
             }
         ];
 
+        const userMemoriesCheck = [
+            { image: "hetvi3.jpg", title: "Golden Hour Revelations", text: "MEMORY_TEXT_1", meta: "MEMORY_META_1" },
+            { image: "hetvi4.jpg", title: "Goofyness in the Wild", text: "MEMORY_TEXT_2", meta: "MEMORY_META_2" },
+            { image: "hetvi5.mp4", title: "Melodic Laughter", text: "MEMORY_TEXT_3", meta: "MEMORY_META_3" },
+            { image: "hetvi6.jpg", title: "MEMORY_TITLE_4", text: "MEMORY_TEXT_4", meta: "MEMORY_META_4" },
+            { image: "hetvi7.jpg", title: "MEMORY_TITLE_5", text: "MEMORY_TEXT_5", meta: "MEMORY_META_5" },
+            { image: "hetvi8.jpg", title: "MEMORY_TITLE_6", text: "MEMORY_TEXT_6", meta: "MEMORY_META_6" }
+        ];
+
         const finalMemories = memories.map((item, idx) => {
             const hasCustomImg = item.image && !item.image.includes("MEMORY_IMAGE") && item.image.trim() !== "";
             const hasCustomTitle = item.title && !item.title.includes("MEMORY_TITLE") && item.title.trim() !== "";
             const hasCustomTxt = item.text && !item.text.includes("MEMORY_TEXT") && item.text.trim() !== "";
             const hasCustomMeta = item.meta && !item.meta.includes("MEMORY_META") && item.meta.trim() !== "";
 
+            const checkedImg = hasCustomImg ? item.image : (userMemoriesCheck[idx] && userMemoriesCheck[idx].image && !userMemoriesCheck[idx].image.includes("MEMORY_IMAGE") ? userMemoriesCheck[idx].image : fallbackMemories[idx].image);
+            const checkedTitle = hasCustomTitle ? item.title : (userMemoriesCheck[idx] && userMemoriesCheck[idx].title && !userMemoriesCheck[idx].title.includes("MEMORY_TITLE") ? userMemoriesCheck[idx].title : fallbackMemories[idx].title);
+            const checkedTxt = hasCustomTxt ? item.text : (userMemoriesCheck[idx] && userMemoriesCheck[idx].text && !userMemoriesCheck[idx].text.includes("MEMORY_TEXT") ? userMemoriesCheck[idx].text : fallbackMemories[idx].text);
+            const checkedMeta = hasCustomMeta ? item.meta : (userMemoriesCheck[idx] && userMemoriesCheck[idx].meta && !userMemoriesCheck[idx].meta.includes("MEMORY_META") ? userMemoriesCheck[idx].meta : fallbackMemories[idx].meta);
+
             return {
-                image: hasCustomImg ? item.image : fallbackMemories[idx].image,
-                title: hasCustomTitle ? item.title : fallbackMemories[idx].title,
-                text: hasCustomTxt ? item.text : fallbackMemories[idx].text,
-                meta: hasCustomMeta ? item.meta : fallbackMemories[idx].meta
+                image: checkedImg,
+                title: checkedTitle,
+                text: checkedTxt,
+                meta: checkedMeta
             };
         });
 
@@ -1106,7 +1273,11 @@
                 
                 const isVideo = isVideoURL(item.image);
                 const mediaElement = isVideo 
-                    ? `<video src="${item.image}" loop muted playsinline aria-hidden="true"></video>`
+                    ? `<video src="${item.image}" loop muted playsinline aria-hidden="true"></video>
+                       <div class="video-overlay-indicator">
+                           <div class="video-indicator-dot"></div>
+                           <span class="video-indicator-text">Live Clip</span>
+                       </div>`
                     : `<img src="${item.image}" alt="${item.title}" loading="lazy">`;
 
                 card.innerHTML = `
@@ -1187,11 +1358,13 @@
         document.getElementById('deck-prev-btn').addEventListener('click', () => {
             currentCardIndex = (currentCardIndex - 1 + finalMemories.length) % finalMemories.length;
             updateDeck();
+            playChime();
         });
 
         document.getElementById('deck-next-btn').addEventListener('click', () => {
             currentCardIndex = (currentCardIndex + 1) % finalMemories.length;
             updateDeck();
+            playChime();
         });
 
         cardsContainer.addEventListener('click', (e) => {
@@ -1204,7 +1377,26 @@
             if (card.style.opacity !== '0' && idx !== currentCardIndex) {
                 currentCardIndex = idx;
                 updateDeck();
+                playChime();
             }
+        });
+
+        cardsContainer.addEventListener('mousemove', (e) => {
+            const activeCard = document.querySelector('.luxury-deck-card.active');
+            if (!activeCard) return;
+
+            const rect = activeCard.getBoundingClientRect();
+            const x = e.clientX - rect.left - rect.width / 2;
+            const y = e.clientY - rect.top - rect.height / 2;
+
+            const rotX = -(y / rect.height) * 15;
+            const rotY = (x / rect.width) * 15;
+
+            activeCard.style.transform = `translateX(0px) translateZ(50px) rotateX(${rotX}deg) rotateY(${rotY}deg)`;
+        });
+
+        cardsContainer.addEventListener('mouseleave', () => {
+            updateDeck();
         });
 
         let touchStartPos = 0;
@@ -1224,6 +1416,7 @@
                     currentCardIndex = (currentCardIndex - 1 + finalMemories.length) % finalMemories.length;
                 }
                 updateDeck();
+                playChime();
             }
         }, { passive: true });
 
@@ -1233,6 +1426,126 @@
                 el.scrollIntoView({ behavior: 'smooth' });
             }
         }
+
+        window.addEventListener('scroll', () => {
+            const totalScroll = document.documentElement.scrollHeight - window.innerHeight;
+            const scrollPercent = totalScroll > 0 ? (window.pageYOffset / totalScroll) * 100 : 0;
+            document.getElementById('scroll-line').style.width = `${scrollPercent}%`;
+        });
+
+        let audioCtx = null;
+        let droneOscs = [];
+        let droneGain = null;
+        let audioPlaying = false;
+
+        const audioBtn = document.getElementById('ambient-audio-btn');
+        const audioBars = document.getElementById('audio-bars');
+        const audioLabel = document.getElementById('audio-btn-label');
+
+        function initAmbientDrone() {
+            try {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                droneGain = audioCtx.createGain();
+                droneGain.gain.setValueAtTime(0, audioCtx.currentTime);
+                droneGain.gain.linearRampToValueAtTime(0.12, audioCtx.currentTime + 3);
+
+                const filter = audioCtx.createBiquadFilter();
+                filter.type = 'lowpass';
+                filter.frequency.setValueAtTime(280, audioCtx.currentTime);
+
+                const lfo = audioCtx.createOscillator();
+                lfo.frequency.setValueAtTime(0.06, audioCtx.currentTime);
+                const lfoGain = audioCtx.createGain();
+                lfoGain.gain.setValueAtTime(60, audioCtx.currentTime);
+
+                lfo.connect(lfoGain);
+                lfoGain.connect(filter.frequency);
+                lfo.start();
+
+                const freqs = [110.00, 165.00, 220.00, 275.00];
+                freqs.forEach(f => {
+                    const osc = audioCtx.createOscillator();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(f, audioCtx.currentTime);
+
+                    const oscGain = audioCtx.createGain();
+                    oscGain.gain.setValueAtTime(0.04, audioCtx.currentTime);
+
+                    const detuneLFO = audioCtx.createOscillator();
+                    detuneLFO.frequency.setValueAtTime(0.1 + Math.random() * 0.15, audioCtx.currentTime);
+                    const detuneGain = audioCtx.createGain();
+                    detuneGain.gain.setValueAtTime(4 + Math.random() * 4, audioCtx.currentTime);
+                    detuneLFO.connect(detuneGain);
+                    detuneGain.connect(osc.detune);
+                    detuneLFO.start();
+
+                    osc.connect(oscGain);
+                    oscGain.connect(filter);
+                    osc.start();
+                    droneOscs.push(osc);
+                });
+
+                filter.connect(droneGain);
+                droneGain.connect(audioCtx.destination);
+            } catch (e) {}
+        }
+
+        function playChime() {
+            if (!audioCtx || !audioPlaying) return;
+            try {
+                const now = audioCtx.currentTime;
+                const pentatonic = [220.00, 246.94, 277.18, 329.63, 369.99, 440.00, 493.88];
+                const randomFreq = pentatonic[Math.floor(Math.random() * pentatonic.length)] * 2;
+
+                const osc = audioCtx.createOscillator();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(randomFreq, now);
+
+                const oscGain = audioCtx.createGain();
+                oscGain.gain.setValueAtTime(0, now);
+                oscGain.gain.linearRampToValueAtTime(0.07, now + 0.05);
+                oscGain.gain.exponentialRampToValueAtTime(0.0001, now + 2.5);
+
+                const delay = audioCtx.createDelay();
+                delay.delayTime.setValueAtTime(0.35, now);
+
+                const feedback = audioCtx.createGain();
+                feedback.gain.setValueAtTime(0.3, now);
+
+                osc.connect(oscGain);
+                oscGain.connect(audioCtx.destination);
+
+                oscGain.connect(delay);
+                delay.connect(feedback);
+                feedback.connect(delay);
+                delay.connect(audioCtx.destination);
+
+                osc.start(now);
+                osc.stop(now + 3);
+            } catch (err) {}
+        }
+
+        audioBtn.addEventListener('click', () => {
+            if (!audioCtx) {
+                initAmbientDrone();
+                audioPlaying = true;
+                audioBars.classList.add('active');
+                audioLabel.textContent = 'Ambient Synth: On';
+                playChime();
+            } else if (audioPlaying) {
+                if (droneGain) droneGain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 1.5);
+                audioPlaying = false;
+                audioBars.classList.remove('active');
+                audioLabel.textContent = 'Ambient Synth: Off';
+            } else {
+                audioCtx.resume();
+                if (droneGain) droneGain.gain.linearRampToValueAtTime(0.12, audioCtx.currentTime + 1.5);
+                audioPlaying = true;
+                audioBars.classList.add('active');
+                audioLabel.textContent = 'Ambient Synth: On';
+                playChime();
+            }
+        });
 
         const ring = document.getElementById('web-cursor');
         const dot = document.getElementById('web-cursor-dot');
@@ -1262,7 +1575,7 @@
         }
         renderCursor();
 
-        document.querySelectorAll('button, a, .luxury-deck-card, .constellation-node').forEach(el => {
+        document.querySelectorAll('button, a, .luxury-deck-card, .constellation-node, .audio-control-node').forEach(el => {
             el.addEventListener('mouseenter', () => {
                 ring.style.transform = 'translate(-50%, -50%) scale(1.6)';
                 ring.style.backgroundColor = 'rgba(248, 218, 212, 0.08)';
@@ -1355,6 +1668,17 @@
             }
         }
 
+        function createExplosion(x, y) {
+            for (let i = 0; i < 20; i++) {
+                const p = new TrailParticle(x, y);
+                p.size = Math.random() * 5 + 3;
+                p.vx = (Math.random() - 0.5) * 6;
+                p.vy = (Math.random() - 0.5) * 6 - 2;
+                p.decay = Math.random() * 0.015 + 0.015;
+                trailParticles.push(p);
+            }
+        }
+
         function buildAtmosphere() {
             atmosphericParticles = [];
             const density = Math.min(60, Math.floor(window.innerWidth / 20));
@@ -1362,6 +1686,25 @@
                 const particle = new CelestialDrifter();
                 particle.y = Math.random() * grainCanvas.height;
                 atmosphericParticles.push(particle);
+            }
+        }
+
+        function drawConstellations() {
+            for (let i = 0; i < atmosphericParticles.length; i++) {
+                for (let j = i + 1; j < atmosphericParticles.length; j++) {
+                    const p1 = atmosphericParticles[i];
+                    const p2 = atmosphericParticles[j];
+                    const dist = Math.hypot(p1.x - p2.x, p1.y - p2.y);
+                    if (dist < 120) {
+                        const alpha = (1 - dist / 120) * 0.12;
+                        canvasCtx.beginPath();
+                        canvasCtx.moveTo(p1.x, p1.y);
+                        canvasCtx.lineTo(p2.x, p2.y);
+                        canvasCtx.strokeStyle = `rgba(248, 218, 212, ${alpha})`;
+                        canvasCtx.lineWidth = 0.5;
+                        canvasCtx.stroke();
+                    }
+                }
             }
         }
 
@@ -1373,6 +1716,8 @@
                 p.update();
                 p.draw();
             });
+
+            drawConstellations();
 
             trailParticles.forEach((p, index) => {
                 p.update();
@@ -1391,9 +1736,14 @@
         window.addEventListener('load', () => {
             gsap.registerPlugin(ScrollTrigger);
 
+            const nameHeading = document.querySelector('.hero-name');
+            const chars = nameHeading.textContent.split('');
+            nameHeading.innerHTML = chars.map(char => `<span class="char" style="display:inline-block">${char}</span>`).join('');
+
             const timeline = gsap.timeline();
             timeline.to('.hero-initial', { scale: 1.1, opacity: 1, duration: 2.2, ease: 'power3.out' })
-                    .to('.hero-name', { opacity: 1, y: 0, duration: 1.6, ease: 'power4.out' }, '-=1.8')
+                    .to('.hero-name', { opacity: 1, duration: 0.1 })
+                    .from('.hero-name .char', { opacity: 0, y: 50, rotateX: -90, stagger: 0.12, duration: 1.4, ease: 'back.out(1.7)' }, '-=1.8')
                     .to('.hero-headline', { opacity: 1, y: 0, duration: 1.4, ease: 'power3.out' }, '-=1.3')
                     .to('.hero-desc', { opacity: 1, y: 0, duration: 1.4, ease: 'power3.out' }, '-=1.3')
                     .to('.btn-luxury', { opacity: 1, y: 0, duration: 1.4, ease: 'power3.out' }, '-=1.3');
@@ -1490,6 +1840,17 @@
                 y: 70,
                 duration: 2,
                 ease: 'power3.out'
+            });
+
+            document.querySelectorAll('.constellation-node').forEach(node => {
+                node.addEventListener('click', (e) => {
+                    const rect = node.getBoundingClientRect();
+                    const x = rect.left + rect.width / 2;
+                    const y = rect.top + rect.height / 2;
+                    createExplosion(x, y);
+                    playChime();
+                    gsap.fromTo(node, { scale: 0.95 }, { scale: 1, duration: 0.6, ease: 'elastic.out(1, 0.3)' });
+                });
             });
 
             renderDeck();
