@@ -1,0 +1,1499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For Hetvi — An Immersive Tribute of Grace & Light</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Montserrat:wght@100;200;300;400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <style>
+        :root {
+            --color-bg-deep: #060408;
+            --color-bg-dusk: #0c0812;
+            --color-bg-candle: #140b1b;
+            --color-bg-glow: #1e1026;
+            --color-champagne: #f4ead4;
+            --color-rose-gold: #e2ab95;
+            --color-blush: #f8dad4;
+            --color-ivory: #faf8f5;
+            --color-mauve: #8a6c8e;
+            --color-lavender: #d2c5cf;
+            --font-serif: 'Cormorant Garamond', serif;
+            --font-sans: 'Montserrat', sans-serif;
+            --transition-fluid: all 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+            --transition-bounce: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background-color: var(--color-bg-deep);
+            color: var(--color-ivory);
+            font-family: var(--font-sans);
+            overflow-x: hidden;
+            line-height: 1.8;
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--color-bg-deep);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--color-bg-glow);
+            border-radius: 20px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--color-rose-gold);
+        }
+
+        #bg-grain-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 1;
+            mix-blend-mode: screen;
+            opacity: 0.9;
+        }
+
+        .cursor-ring {
+            width: 28px;
+            height: 28px;
+            border: 1px solid var(--color-rose-gold);
+            border-radius: 50%;
+            position: fixed;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 9999;
+            transition: width 0.3s, height 0.3s, background-color 0.3s, border-color 0.3s;
+            mix-blend-mode: difference;
+        }
+
+        .cursor-point {
+            width: 5px;
+            height: 5px;
+            background-color: var(--color-champagne);
+            border-radius: 50%;
+            position: fixed;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        @media (max-width: 768px) {
+            .cursor-ring, .cursor-point {
+                display: none;
+            }
+        }
+
+        .aura-glow {
+            position: absolute;
+            width: 80vw;
+            height: 80vw;
+            background: radial-gradient(circle, rgba(248, 218, 212, 0.09) 0%, rgba(138, 108, 142, 0.03) 60%, rgba(0, 0, 0, 0) 100%);
+            border-radius: 50%;
+            pointer-events: none;
+            filter: blur(130px);
+            z-index: 2;
+        }
+
+        .cinematic-hero {
+            position: relative;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            text-align: center;
+            padding: 2.5rem;
+            z-index: 3;
+            overflow: hidden;
+        }
+
+        .hero-vignette {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, transparent 35%, var(--color-bg-deep) 100%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .hero-initial {
+            font-family: var(--font-serif);
+            font-size: clamp(10rem, 28vw, 26rem);
+            font-weight: 300;
+            color: rgba(244, 234, 212, 0.025);
+            position: absolute;
+            line-height: 1;
+            letter-spacing: -0.05em;
+            pointer-events: none;
+            transform: scale(0.9);
+            z-index: 0;
+        }
+
+        .hero-name-wrap {
+            position: relative;
+            z-index: 2;
+            margin-bottom: 2rem;
+        }
+
+        .hero-name {
+            font-family: var(--font-serif);
+            font-size: clamp(5rem, 14vw, 12rem);
+            font-weight: 300;
+            letter-spacing: 0.3em;
+            color: var(--color-ivory);
+            line-height: 1.1;
+            text-shadow: 0 0 60px rgba(248, 218, 212, 0.25);
+            text-transform: uppercase;
+            opacity: 0;
+            transform: translateY(40px);
+        }
+
+        .hero-headline {
+            font-family: var(--font-serif);
+            font-size: clamp(1.4rem, 4vw, 2.8rem);
+            font-style: italic;
+            font-weight: 300;
+            color: var(--color-rose-gold);
+            opacity: 0;
+            transform: translateY(30px);
+            margin-bottom: 2.5rem;
+            letter-spacing: 0.08em;
+            z-index: 2;
+        }
+
+        .hero-desc {
+            max-width: 700px;
+            font-size: clamp(0.95rem, 2.4vw, 1.2rem);
+            font-weight: 200;
+            letter-spacing: 0.09em;
+            color: var(--color-lavender);
+            margin-bottom: 4rem;
+            line-height: 1.9;
+            opacity: 0;
+            transform: translateY(30px);
+            z-index: 2;
+        }
+
+        .btn-luxury {
+            position: relative;
+            background: transparent;
+            border: 1px solid rgba(244, 234, 212, 0.3);
+            padding: 1.5rem 4rem;
+            color: var(--color-ivory);
+            font-family: var(--font-sans);
+            font-size: 0.85rem;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            cursor: pointer;
+            overflow: hidden;
+            transition: var(--transition-fluid);
+            border-radius: 50px;
+            opacity: 0;
+            transform: translateY(30px);
+            z-index: 2;
+            outline: none;
+        }
+
+        .btn-luxury::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, rgba(248, 218, 212, 0.18), rgba(244, 234, 212, 0.18));
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+            z-index: -1;
+        }
+
+        .btn-luxury:hover {
+            border-color: var(--color-blush);
+            box-shadow: 0 0 40px rgba(248, 218, 212, 0.3);
+            letter-spacing: 0.33em;
+        }
+
+        .btn-luxury:hover::before {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+
+        .section-wrapper {
+            position: relative;
+            padding: 14rem 5rem;
+            z-index: 3;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 768px) {
+            .section-wrapper {
+                padding: 9rem 2rem;
+            }
+        }
+
+        .editorial-grid {
+            display: grid;
+            grid-template-columns: 1.25fr 0.75fr;
+            gap: 8rem;
+            align-items: center;
+        }
+
+        @media (max-width: 1024px) {
+            .editorial-grid {
+                grid-template-columns: 1fr;
+                gap: 5rem;
+            }
+        }
+
+        .art-frame-container {
+            position: relative;
+            width: 100%;
+        }
+
+        .art-frame {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 4/5;
+            overflow: hidden;
+            border-radius: 24px;
+            box-shadow: 0 50px 100px rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(248, 218, 212, 0.15);
+        }
+
+        .art-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(12%) contrast(105%);
+            transition: transform 1.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .art-frame:hover img {
+            transform: scale(1.08);
+        }
+
+        .art-overlay-badge {
+            position: absolute;
+            bottom: -35px;
+            right: -35px;
+            background: rgba(12, 8, 18, 0.9);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border: 1px solid rgba(248, 218, 212, 0.2);
+            padding: 2.5rem;
+            border-radius: 16px;
+            max-width: 340px;
+            box-shadow: 0 40px 80px rgba(0,0,0,0.5);
+        }
+
+        @media (max-width: 768px) {
+            .art-overlay-badge {
+                position: static;
+                margin-top: 2rem;
+                max-width: 100%;
+            }
+        }
+
+        .art-overlay-badge p {
+            font-family: var(--font-serif);
+            font-style: italic;
+            font-size: 1.35rem;
+            line-height: 1.6;
+            color: var(--color-champagne);
+        }
+
+        .editorial-title {
+            font-family: var(--font-serif);
+            font-size: clamp(3.2rem, 8vw, 5.5rem);
+            font-weight: 300;
+            line-height: 1.15;
+            margin-bottom: 2.5rem;
+            color: var(--color-ivory);
+        }
+
+        .editorial-title span {
+            display: block;
+            font-family: var(--font-sans);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.4em;
+            color: var(--color-rose-gold);
+            margin-bottom: 1.2rem;
+            font-weight: 400;
+        }
+
+        .editorial-body {
+            font-size: clamp(1.05rem, 2.5vw, 1.2rem);
+            color: var(--color-lavender);
+            font-weight: 300;
+            line-height: 1.95;
+            letter-spacing: 0.03em;
+            margin-bottom: 2rem;
+        }
+
+        .editorial-blockquote {
+            font-family: var(--font-serif);
+            font-style: italic;
+            font-size: clamp(1.6rem, 4vw, 2.2rem);
+            color: var(--color-blush);
+            border-left: 3px solid var(--color-rose-gold);
+            padding-left: 2.5rem;
+            margin: 4rem 0;
+            line-height: 1.45;
+        }
+
+        .resonance-row {
+            display: grid;
+            grid-template-columns: 0.85fr 1.15fr;
+            gap: 8rem;
+            align-items: center;
+        }
+
+        @media (max-width: 1024px) {
+            .resonance-row {
+                grid-template-columns: 1fr;
+                gap: 5rem;
+                display: flex;
+                flex-direction: column-reverse;
+            }
+        }
+
+        .resonance-media {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 1/1;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 1px solid rgba(244, 234, 212, 0.2);
+            box-shadow: 0 50px 100px rgba(0, 0, 0, 0.6);
+        }
+
+        .resonance-media img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 1.8s ease;
+        }
+
+        .resonance-media:hover img {
+            transform: scale(1.06);
+        }
+
+        .qualities-constellation-section {
+            background: radial-gradient(circle at center, var(--color-bg-dusk) 0%, var(--color-bg-deep) 100%);
+            padding: 12rem 2rem;
+            text-align: center;
+            position: relative;
+            z-index: 3;
+            border-top: 1px solid rgba(248, 218, 212, 0.04);
+            border-bottom: 1px solid rgba(248, 218, 212, 0.04);
+        }
+
+        .constellation-intro {
+            max-width: 800px;
+            margin: 0 auto 5rem auto;
+        }
+
+        .constellation-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 2.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .constellation-node {
+            background: rgba(20, 11, 27, 0.45);
+            border: 1px solid rgba(248, 218, 212, 0.08);
+            border-radius: 20px;
+            padding: 3rem 2rem;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            transition: var(--transition-fluid);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .constellation-node::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(248, 218, 212, 0.05), transparent);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .constellation-node:hover {
+            transform: translateY(-8px);
+            border-color: var(--color-rose-gold);
+            box-shadow: 0 20px 40px rgba(226, 171, 149, 0.12);
+        }
+
+        .constellation-node:hover::before {
+            opacity: 1;
+        }
+
+        .node-icon {
+            font-size: 2.2rem;
+            color: var(--color-rose-gold);
+            margin-bottom: 1.5rem;
+            text-shadow: 0 0 15px rgba(226, 171, 149, 0.4);
+        }
+
+        .node-title {
+            font-family: var(--font-serif);
+            font-size: 1.7rem;
+            font-weight: 400;
+            color: var(--color-champagne);
+            margin-bottom: 1rem;
+        }
+
+        .node-desc {
+            font-size: 0.95rem;
+            color: var(--color-lavender);
+            font-weight: 300;
+            line-height: 1.7;
+        }
+
+        .highlight-accent-sec {
+            text-align: center;
+            max-width: 950px;
+            margin: 0 auto;
+            position: relative;
+            padding: 4rem 0;
+        }
+
+        .star-sigil {
+            font-family: var(--font-serif);
+            font-size: 4.5rem;
+            color: var(--color-rose-gold);
+            opacity: 0.7;
+            margin-bottom: 2rem;
+            display: inline-block;
+            text-shadow: 0 0 20px rgba(226, 171, 149, 0.3);
+        }
+
+        .premium-carousel-container {
+            background-color: var(--color-bg-dusk);
+            padding: 12rem 0;
+            position: relative;
+            overflow: hidden;
+            z-index: 3;
+            border-top: 1px solid rgba(248, 218, 212, 0.05);
+            border-bottom: 1px solid rgba(248, 218, 212, 0.05);
+        }
+
+        .carousel-heading-wrap {
+            text-align: center;
+            margin-bottom: 6rem;
+            padding: 0 2rem;
+        }
+
+        .carousel-heading-wrap h2 {
+            font-family: var(--font-serif);
+            font-size: clamp(2.8rem, 6.5vw, 4.5rem);
+            font-weight: 300;
+            color: var(--color-ivory);
+            line-height: 1.2;
+        }
+
+        .carousel-heading-wrap p {
+            font-family: var(--font-sans);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.35em;
+            color: var(--color-champagne);
+            margin-top: 1rem;
+            font-weight: 400;
+        }
+
+        .carousel-deck {
+            position: relative;
+            width: 100%;
+            height: 600px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: visible;
+        }
+
+        @media (max-width: 768px) {
+            .carousel-deck {
+                height: 520px;
+            }
+        }
+
+        .deck-cards-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            perspective: 2000px;
+            transform-style: preserve-3d;
+        }
+
+        .luxury-deck-card {
+            position: absolute;
+            width: 390px;
+            height: 540px;
+            background: linear-gradient(135deg, rgba(30, 16, 38, 0.75), rgba(12, 8, 18, 0.95));
+            border: 1px solid rgba(248, 218, 212, 0.15);
+            border-radius: 28px;
+            overflow: hidden;
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 45px 90px rgba(0, 0, 0, 0.5);
+            transform-style: preserve-3d;
+            backface-visibility: hidden;
+        }
+
+        @media (max-width: 480px) {
+            .luxury-deck-card {
+                width: 310px;
+                height: 460px;
+            }
+        }
+
+        .card-visual-wrapper {
+            position: relative;
+            width: 100%;
+            height: 54%;
+            overflow: hidden;
+            border-bottom: 1px solid rgba(248, 218, 212, 0.1);
+        }
+
+        .card-visual-wrapper img, .card-visual-wrapper video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 1.5s cubic-bezier(0.25, 1, 0.3, 1);
+        }
+
+        .luxury-deck-card.active:hover .card-visual-wrapper img,
+        .luxury-deck-card.active:hover .card-visual-wrapper video {
+            transform: scale(1.08);
+        }
+
+        .card-content-wrapper {
+            padding: 2.2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            flex-grow: 1;
+            transform: translateZ(30px);
+        }
+
+        @media (max-width: 480px) {
+            .card-content-wrapper {
+                padding: 1.6rem;
+            }
+        }
+
+        .card-meta {
+            font-size: 0.75rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--color-rose-gold);
+            margin-bottom: 0.6rem;
+            font-weight: 500;
+        }
+
+        .card-title {
+            font-family: var(--font-serif);
+            font-size: clamp(1.3rem, 3vw, 1.75rem);
+            font-weight: 400;
+            color: var(--color-ivory);
+            margin-bottom: 0.6rem;
+            line-height: 1.35;
+        }
+
+        .card-desc {
+            font-size: 0.92rem;
+            font-weight: 300;
+            color: var(--color-lavender);
+            line-height: 1.65;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .deck-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2.5rem;
+            margin-top: 5rem;
+        }
+
+        .deck-btn {
+            width: 65px;
+            height: 65px;
+            border-radius: 50%;
+            border: 1px solid rgba(244, 234, 212, 0.2);
+            background: transparent;
+            color: var(--color-ivory);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition-fluid);
+            outline: none;
+        }
+
+        .deck-btn:hover {
+            border-color: var(--color-blush);
+            box-shadow: 0 0 30px rgba(248, 218, 212, 0.25);
+            transform: scale(1.1);
+            color: var(--color-rose-gold);
+        }
+
+        .deck-btn svg {
+            width: 24px;
+            height: 24px;
+            fill: currentColor;
+        }
+
+        .deck-btn:active {
+            transform: scale(0.95);
+        }
+
+        .climax-letter-section {
+            position: relative;
+            padding: 16rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 3;
+            overflow: hidden;
+        }
+
+        .climax-backdrop {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 130%;
+            height: 130%;
+            transform: translate(-50%, -50%);
+            background: radial-gradient(circle, rgba(30, 16, 38, 0.5) 0%, transparent 65%);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .climax-container {
+            max-width: 950px;
+            width: 100%;
+            background: linear-gradient(145deg, rgba(18, 10, 24, 0.85), rgba(6, 4, 8, 0.98));
+            border: 1px solid rgba(248, 218, 212, 0.12);
+            border-radius: 40px;
+            padding: 7rem 6rem;
+            box-shadow: 0 60px 120px rgba(0,0,0,0.65);
+            backdrop-filter: blur(45px);
+            -webkit-backdrop-filter: blur(45px);
+            position: relative;
+        }
+
+        @media (max-width: 768px) {
+            .climax-container {
+                padding: 4.5rem 2.5rem;
+            }
+        }
+
+        .climax-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(248, 218, 212, 0.15), transparent, rgba(138, 108, 142, 0.1));
+            border-radius: 40px;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .climax-sigil {
+            font-size: 2.2rem;
+            color: var(--color-champagne);
+            margin-bottom: 3.5rem;
+            letter-spacing: 0.15em;
+            font-family: var(--font-serif);
+            font-weight: 300;
+        }
+
+        .climax-text {
+            font-family: var(--font-serif);
+            font-size: clamp(1.4rem, 3vw, 1.9rem);
+            line-height: 1.9;
+            color: var(--color-lavender);
+            font-weight: 300;
+            margin-bottom: 4.5rem;
+            text-align: justify;
+        }
+
+        .climax-valediction {
+            font-family: var(--font-serif);
+            font-size: 1.55rem;
+            font-style: italic;
+            color: var(--color-rose-gold);
+            text-align: right;
+            letter-spacing: 0.05em;
+        }
+
+        .film-ending-scene {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            text-align: center;
+            position: relative;
+            z-index: 3;
+            padding: 2.5rem;
+        }
+
+        .film-credit-headline {
+            font-family: var(--font-serif);
+            font-size: clamp(3.2rem, 9vw, 7rem);
+            font-weight: 300;
+            letter-spacing: 0.2em;
+            line-height: 1.2;
+            color: var(--color-ivory);
+            margin-bottom: 2rem;
+            text-shadow: 0 0 50px rgba(248, 218, 212, 0.2);
+            text-transform: uppercase;
+        }
+
+        .film-credit-sub {
+            font-family: var(--font-serif);
+            font-size: clamp(1.3rem, 3.5vw, 2.2rem);
+            font-style: italic;
+            font-weight: 300;
+            color: var(--color-champagne);
+            letter-spacing: 0.08em;
+            margin-bottom: 6rem;
+        }
+
+        .btn-return {
+            background: transparent;
+            border: none;
+            color: var(--color-mauve);
+            font-family: var(--font-sans);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.3em;
+            cursor: pointer;
+            transition: var(--transition-fluid);
+            outline: none;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .btn-return:hover {
+            color: var(--color-blush);
+            letter-spacing: 0.35em;
+        }
+
+        .btn-return svg {
+            width: 14px;
+            height: 14px;
+            fill: currentColor;
+            transform: rotate(-90deg);
+            transition: transform 0.4s ease;
+        }
+
+        .btn-return:hover svg {
+            transform: rotate(-90deg) translateY(-5px);
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation: none !important;
+                transition: none !important;
+                scroll-behavior: auto !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="cursor-ring" id="web-cursor"></div>
+    <div class="cursor-point" id="web-cursor-dot"></div>
+
+    <canvas id="bg-grain-canvas"></canvas>
+
+    <div class="aura-glow" style="top: -5%; left: 15%;"></div>
+    <div class="aura-glow" style="top: 35%; right: -15%;"></div>
+    <div class="aura-glow" style="bottom: 10%; left: -20%;"></div>
+
+    <header class="cinematic-hero" id="hero-start">
+        <div class="hero-vignette"></div>
+        <div class="hero-initial">H</div>
+        <div class="hero-name-wrap">
+            <h1 class="hero-name">HETVI</h1>
+        </div>
+        <p class="hero-headline">Sophisticated grace, radiant warmth, beautiful presence.</p>
+        <p class="hero-desc">This is a handcrafted digital tribute dedicated to celebrating the authentic light and effortless elegance you offer to every single moment and person around you.</p>
+        <button class="btn-luxury" onclick="scrollToElement('#chapter-one')">Begin the Tribute</button>
+    </header>
+
+    <main>
+        <section class="section-wrapper" id="chapter-one">
+            <div class="editorial-grid">
+                <div class="narrative-content">
+                    <h2 class="editorial-title">
+                        <span>A Symphony of Grace</span>
+                        The Poetic Essence of Hetvi
+                    </h2>
+                    <p class="editorial-body">
+                        True presence is never about demanding the gaze of a room; it is about gently changing the atmospheric pressure. Hetvi, you carry a quiet, high-end brilliance that is both comforting and completely mesmerizing. Your natural kindness forms a protective shelter around those fortunate enough to cross your path.
+                    </p>
+                    <p class="editorial-body">
+                        To navigate life in your light is to witness a perpetual golden sunset—filled with champagne glows, elegant nuances, and a deep, reassuring tranquility.
+                    </p>
+                    <div class="editorial-blockquote">
+                        "Your warmth is a masterclass in subtlety; a silent proof that the most breathtaking souls do not need to make a sound to be remembered."
+                    </div>
+                </div>
+                <div class="art-frame-container">
+                    <div class="art-frame">
+                        <img src="hetvi1.jpg" alt="Abstract artistic portrait signifying grace and pure elegance">
+                    </div>
+                    <div class="art-overlay-badge">
+                        <p>There is a rare architecture in the way you listen and hold space for others.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-wrapper">
+            <div class="resonance-row">
+                <div class="resonance-media">
+                    <img src="hetvi2.jpg" alt="Golden sunlight aesthetic representational image">
+                </div>
+                <div class="resonance-details">
+                    <h2 class="editorial-title">
+                        <span>Luminous Intellect & Heart</span>
+                        The Radiant Calm
+                    </h2>
+                    <p class="editorial-body">
+                        Beyond the obvious charm of your laughter lies a deep, brilliant sanctuary of thought. You understand without judging, inspire without forcing, and elevate without realizing. Conversations with you are never transactional; they are artistic pauses in a world that never stops running.
+                    </p>
+                    <p class="editorial-body">
+                        We celebrate you today for your incredible empathy, your steady focus, and the simple elegance with which you live out your days.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section class="qualities-constellation-section">
+            <div class="constellation-intro">
+                <h2 class="editorial-title">
+                    <span>The Coordinates of Her Spirit</span>
+                    Celestial Facets
+                </h2>
+                <p class="editorial-body">Explore the singular characteristics that define Hetvi's beautiful, quiet influence on our lives.</p>
+            </div>
+            <div class="constellation-grid">
+                <div class="constellation-node">
+                    <div class="node-icon">✦</div>
+                    <h3 class="node-title">Elegance</h3>
+                    <p class="node-desc">An effortless, natural poise born of quiet stillness. Composed and classic, she turns simplest seconds into art.</p>
+                </div>
+                <div class="constellation-node">
+                    <div class="node-icon">❀</div>
+                    <h3 class="node-title">Warmth</h3>
+                    <p class="node-desc">A deep, welcoming light. Her laughter is an instant protective sanctuary from the busy, cold world outside.</p>
+                </div>
+                <div class="constellation-node">
+                    <div class="node-icon">✧</div>
+                    <h3 class="node-title">Intellect</h3>
+                    <p class="node-desc">Deeply curious and sharp. She navigates thoughts and feelings with a luminous calm that elevates everyone.</p>
+                </div>
+                <div class="constellation-node">
+                    <div class="node-icon">❦</div>
+                    <h3 class="node-title">Presence</h3>
+                    <p class="node-desc">A reassuring constants. To share a space with her is to understand the absolute luxury of sincere harmony.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-wrapper">
+            <div class="highlight-accent-sec">
+                <div class="star-sigil">✦</div>
+                <h2 class="editorial-title">In an Era of Noise, You Are a Beautiful Melody</h2>
+                <p class="editorial-body" style="max-width: 800px; margin: 0 auto;">
+                    Your balance, focus, and genuine sincerity remain absolutely untainted by the relentless pace of the modern world. Around you, shared moments feel deliberate, premium, and deeply significant.
+                </p>
+            </div>
+        </section>
+
+        <section class="premium-carousel-container">
+            <div class="carousel-heading-wrap">
+                <h2>The Archive of Beautiful Days</h2>
+                <p>Cherished, everlasting chapters with Hetvi</p>
+            </div>
+
+            <div class="carousel-deck">
+                <div class="deck-cards-container" id="cards-wrapper"></div>
+            </div>
+
+            <div class="deck-controls">
+                <button class="deck-btn" id="deck-prev-btn" aria-label="Previous Chapter">
+                    <svg viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+                </button>
+                <button class="deck-btn" id="deck-next-btn" aria-label="Next Chapter">
+                    <svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
+                </button>
+            </div>
+        </section>
+
+        <section class="climax-letter-section">
+            <div class="climax-backdrop"></div>
+            <div class="climax-container">
+                <div class="climax-sigil">MCMXCVII — FOR HETVI</div>
+                <div class="climax-text">
+                    Hetvi, there are lives that pass by like wind, leaving no trace. And then there are individuals whose very existence marks a permanent and stunning path in the hearts of others. You are that rare presence. Your strength is wrapped in elegance; your warmth is a steady fire that illuminates our days. Thank you for the depth of your character, the absolute sincerity of your affection, and the inspiring standard of beauty you bring to every simple moment. You are an unforgettable masterpiece.
+                </div>
+                <div class="climax-valediction">In continuous, quiet admiration.</div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="film-ending-scene">
+        <h2 class="film-credit-headline">A Living Light</h2>
+        <p class="film-credit-sub">Handcrafted with deep admiration for Hetvi</p>
+        <button class="btn-return" onclick="scrollToElement('#hero-start')">
+            <svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
+            Return to the beginning
+        </button>
+    </footer>
+
+    <script>
+        const memories = [
+            {
+                image: "hetvi3.jpg",
+                title: "Golden Hour Revelations",
+                text: "MEMORY_TEXT_1",
+                meta: "MEMORY_META_1"
+            },
+            {
+                image: "hetvi4.jpg",
+                title: "Goofyness in the Wild",
+                text: "MEMORY_TEXT_2",
+                meta: "MEMORY_META_2"
+            },
+            {
+                image: "hetvi5.mp4",
+                title: "Melodic Laughter",
+                text: "MEMORY_TEXT_3",
+                meta: "MEMORY_META_3"
+            },
+            {
+                image: "hetvi6.jpg",
+                title: "MEMORY_TITLE_4",
+                text: "MEMORY_TEXT_4",
+                meta: "MEMORY_META_4"
+            },
+            {
+                image: "hetvi7.jpg",
+                title: "MEMORY_TITLE_5",
+                text: "MEMORY_TEXT_5",
+                meta: "MEMORY_META_5"
+            },
+            {
+                image: "hetvi8.jpg",
+                title: "MEMORY_TITLE_6",
+                text: "MEMORY_TEXT_6",
+                meta: "MEMORY_META_6"
+            }
+        ];
+
+        const fallbackMemories = [
+            {
+                image: "https://player.vimeo.com/external/371433846.sd.mp4?s=236da2f3c022f733fb740a9ecaa9360879de52a1&profile_id=139&oauth2_token_id=57447761",
+                title: "Where Quiet Shadows Sleep",
+                text: "Admiring the twilight paint the horizon, realizing how deeply peaceful and restorative your presence feels.",
+                meta: "TWILIGHT OVER GLEN • 2024"
+            },
+            {
+                image: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q=80&w=800&auto=format&fit=crop",
+                title: "Golden Hour Revelations",
+                text: "Hours vanish effortlessly when you share your thoughts. Your intellectual grace is utterly captivating.",
+                meta: "DUSK & REFLECTION • 2024"
+            },
+            {
+                image: "https://player.vimeo.com/external/435674703.sd.mp4?s=6f41de33bcacda46b94000305881180fb8b7880b&profile_id=139&oauth2_token_id=57447761",
+                title: "The Melodic Laughter",
+                text: "Your genuine laughter holds the rare power to transform a chaotic day into a beautifully clear sky.",
+                meta: "SPRING MELODY • 2025"
+            },
+            {
+                image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=800&auto=format&fit=crop",
+                title: "Journeys In Silent Lanes",
+                text: "Strolling side by side, discovering that ordinary trails become unforgettable paths because you are there.",
+                meta: "THE SANCTUARY WALKS • 2025"
+            },
+            {
+                image: "https://images.unsplash.com/photo-1513151233558-d860c5398176?q=80&w=800&auto=format&fit=crop",
+                title: "Shared Inner Havens",
+                text: "A beautiful, organic harmony of minds. No pretension, just absolute clarity and effortless comfort.",
+                meta: "CHAMBER OF REVERY • 2025"
+            },
+            {
+                image: "https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=800&auto=format&fit=crop",
+                title: "Starlit Splendor",
+                text: "A perfect constellation overhead, entirely outshone by the exquisite poise and depth of your spirit.",
+                meta: "CELESTIAL HOUR • 2025"
+            }
+        ];
+
+        const finalMemories = memories.map((item, idx) => {
+            const hasCustomImg = item.image && !item.image.includes("MEMORY_IMAGE") && item.image.trim() !== "";
+            const hasCustomTitle = item.title && !item.title.includes("MEMORY_TITLE") && item.title.trim() !== "";
+            const hasCustomTxt = item.text && !item.text.includes("MEMORY_TEXT") && item.text.trim() !== "";
+            const hasCustomMeta = item.meta && !item.meta.includes("MEMORY_META") && item.meta.trim() !== "";
+
+            return {
+                image: hasCustomImg ? item.image : fallbackMemories[idx].image,
+                title: hasCustomTitle ? item.title : fallbackMemories[idx].title,
+                text: hasCustomTxt ? item.text : fallbackMemories[idx].text,
+                meta: hasCustomMeta ? item.meta : fallbackMemories[idx].meta
+            };
+        });
+
+        const cardsContainer = document.getElementById('cards-wrapper');
+        let currentCardIndex = 0;
+
+        function isVideoURL(url) {
+            return url.includes('.mp4') || url.includes('.webm') || url.includes('.ogg') || url.includes('vimeo') || url.includes('video');
+        }
+
+        function renderDeck() {
+            cardsContainer.innerHTML = '';
+            finalMemories.forEach((item, idx) => {
+                const card = document.createElement('div');
+                card.className = 'luxury-deck-card';
+                
+                const isVideo = isVideoURL(item.image);
+                const mediaElement = isVideo 
+                    ? `<video src="${item.image}" loop muted playsinline aria-hidden="true"></video>`
+                    : `<img src="${item.image}" alt="${item.title}" loading="lazy">`;
+
+                card.innerHTML = `
+                    <div class="card-visual-wrapper">
+                        ${mediaElement}
+                    </div>
+                    <div class="card-content-wrapper">
+                        <div>
+                            <div class="card-meta">${item.meta}</div>
+                            <h3 class="card-title">${item.title}</h3>
+                        </div>
+                        <p class="card-desc">${item.text}</p>
+                    </div>
+                `;
+                cardsContainer.appendChild(card);
+            });
+            updateDeck();
+        }
+
+        function updateDeck() {
+            const cards = document.querySelectorAll('.luxury-deck-card');
+            const total = cards.length;
+            if (total === 0) return;
+
+            const isMobile = window.innerWidth <= 768;
+            const gap = isMobile ? 130 : 360;
+            const translateZUnit = isMobile ? -140 : -120;
+            const rotateYUnit = isMobile ? -12 : -25;
+
+            cards.forEach((card, idx) => {
+                let offset = idx - currentCardIndex;
+
+                if (offset < -Math.floor(total / 2)) offset += total;
+                if (offset > Math.floor(total / 2)) offset -= total;
+
+                const absOffset = Math.abs(offset);
+                const active = offset === 0;
+
+                card.style.transition = 'transform 0.8s cubic-bezier(0.25, 1, 0.3, 1), opacity 0.8s cubic-bezier(0.25, 1, 0.3, 1), filter 0.8s ease';
+
+                const video = card.querySelector('video');
+
+                if (absOffset <= 1) {
+                    const translateX = offset * gap;
+                    const translateZ = absOffset * translateZUnit;
+                    const rotateY = offset * rotateYUnit;
+                    const opacity = active ? 1 : 0.45;
+                    const zIndex = 10 - absOffset;
+
+                    card.style.transform = `translateX(${translateX}px) translateZ(${translateZ}px) rotateY(${rotateY}deg)`;
+                    card.style.opacity = opacity;
+                    card.style.zIndex = zIndex;
+                    card.style.filter = active ? 'blur(0px)' : 'blur(2px)';
+                    card.style.pointerEvents = 'auto';
+
+                    if (video) {
+                        if (active) {
+                            video.play().catch(() => {});
+                        } else {
+                            video.pause();
+                        }
+                    }
+                } else {
+                    const translateX = offset > 0 ? gap * 1.5 : -gap * 1.5;
+                    card.style.transform = `translateX(${translateX}px) translateZ(-300px) scale(0.6)`;
+                    card.style.opacity = '0';
+                    card.style.zIndex = '1';
+                    card.style.filter = 'blur(10px)';
+                    card.style.pointerEvents = 'none';
+
+                    if (video) {
+                        video.pause();
+                    }
+                }
+            });
+        }
+
+        document.getElementById('deck-prev-btn').addEventListener('click', () => {
+            currentCardIndex = (currentCardIndex - 1 + finalMemories.length) % finalMemories.length;
+            updateDeck();
+        });
+
+        document.getElementById('deck-next-btn').addEventListener('click', () => {
+            currentCardIndex = (currentCardIndex + 1) % finalMemories.length;
+            updateDeck();
+        });
+
+        cardsContainer.addEventListener('click', (e) => {
+            const card = e.target.closest('.luxury-deck-card');
+            if (!card) return;
+
+            const cards = Array.from(document.querySelectorAll('.luxury-deck-card'));
+            const idx = cards.indexOf(card);
+
+            if (card.style.opacity !== '0' && idx !== currentCardIndex) {
+                currentCardIndex = idx;
+                updateDeck();
+            }
+        });
+
+        let touchStartPos = 0;
+        cardsContainer.addEventListener('touchstart', (e) => {
+            touchStartPos = e.touches[0].clientX;
+        }, { passive: true });
+
+        cardsContainer.addEventListener('touchend', (e) => {
+            const touchEndPos = e.changedTouches[0].clientX;
+            const threshold = 60;
+            const diff = touchStartPos - touchEndPos;
+
+            if (Math.abs(diff) > threshold) {
+                if (diff > 0) {
+                    currentCardIndex = (currentCardIndex + 1) % finalMemories.length;
+                } else {
+                    currentCardIndex = (currentCardIndex - 1 + finalMemories.length) % finalMemories.length;
+                }
+                updateDeck();
+            }
+        }, { passive: true });
+
+        function scrollToElement(selector) {
+            const el = document.querySelector(selector);
+            if (el) {
+                el.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        const ring = document.getElementById('web-cursor');
+        const dot = document.getElementById('web-cursor-dot');
+        let tX = 0, tY = 0;
+        let cX = 0, cY = 0;
+
+        window.addEventListener('mousemove', (e) => {
+            tX = e.clientX;
+            tY = e.clientY;
+            dot.style.left = `${tX}px`;
+            dot.style.top = `${tY}px`;
+            createTrailParticle(tX, tY);
+        });
+
+        window.addEventListener('touchmove', (e) => {
+            if (e.touches.length > 0) {
+                createTrailParticle(e.touches[0].clientX, e.touches[0].clientY);
+            }
+        }, { passive: true });
+
+        function renderCursor() {
+            cX += (tX - cX) * 0.16;
+            cY += (tY - cY) * 0.16;
+            ring.style.left = `${cX}px`;
+            ring.style.top = `${cY}px`;
+            requestAnimationFrame(renderCursor);
+        }
+        renderCursor();
+
+        document.querySelectorAll('button, a, .luxury-deck-card, .constellation-node').forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                ring.style.transform = 'translate(-50%, -50%) scale(1.6)';
+                ring.style.backgroundColor = 'rgba(248, 218, 212, 0.08)';
+                ring.style.borderColor = 'var(--color-champagne)';
+            });
+            el.addEventListener('mouseleave', () => {
+                ring.style.transform = 'translate(-50%, -50%) scale(1)';
+                ring.style.backgroundColor = 'transparent';
+                ring.style.borderColor = 'var(--color-rose-gold)';
+            });
+        });
+
+        const grainCanvas = document.getElementById('bg-grain-canvas');
+        const canvasCtx = grainCanvas.getContext('2d');
+        let atmosphericParticles = [];
+        let trailParticles = [];
+
+        function adjustCanvasSize() {
+            grainCanvas.width = window.innerWidth;
+            grainCanvas.height = window.innerHeight;
+        }
+        adjustCanvasSize();
+        window.addEventListener('resize', () => {
+            adjustCanvasSize();
+            updateDeck();
+        });
+
+        class CelestialDrifter {
+            constructor() {
+                this.reset();
+            }
+            reset() {
+                this.x = Math.random() * grainCanvas.width;
+                this.y = Math.random() * grainCanvas.height + grainCanvas.height;
+                this.radius = Math.random() * 2.5 + 1;
+                this.verticalSpeed = -(Math.random() * 0.45 + 0.15);
+                this.horizontalSpeed = Math.sin(Math.random() * 6) * 0.25;
+                this.opacity = Math.random() * 0.45 + 0.1;
+                this.rotationSpeed = Math.random() * 0.015 + 0.003;
+                this.currentAngle = Math.random() * Math.PI;
+            }
+            update() {
+                this.y += this.verticalSpeed;
+                this.currentAngle += this.rotationSpeed;
+                this.x += Math.sin(this.currentAngle) * 0.35 + this.horizontalSpeed;
+
+                if (this.y < -30 || this.x < -30 || this.x > grainCanvas.width + 30) {
+                    this.reset();
+                    this.y = grainCanvas.height + 20;
+                }
+            }
+            draw() {
+                canvasCtx.beginPath();
+                canvasCtx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                canvasCtx.fillStyle = `rgba(248, 218, 212, ${this.opacity})`;
+                canvasCtx.shadowBlur = 10;
+                canvasCtx.shadowColor = 'rgba(245, 234, 212, 0.5)';
+                canvasCtx.fill();
+            }
+        }
+
+        class TrailParticle {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.size = Math.random() * 4 + 2;
+                this.vx = (Math.random() - 0.5) * 1.5;
+                this.vy = (Math.random() - 0.5) * 1.5 - 0.5;
+                this.alpha = 1;
+                this.decay = Math.random() * 0.02 + 0.015;
+            }
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                this.alpha -= this.decay;
+            }
+            draw() {
+                canvasCtx.beginPath();
+                canvasCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                canvasCtx.fillStyle = `rgba(244, 234, 212, ${this.alpha * 0.8})`;
+                canvasCtx.shadowBlur = 15;
+                canvasCtx.shadowColor = 'rgba(226, 171, 149, 0.6)';
+                canvasCtx.fill();
+            }
+        }
+
+        function createTrailParticle(x, y) {
+            if (Math.random() < 0.4) {
+                trailParticles.push(new TrailParticle(x, y));
+            }
+        }
+
+        function buildAtmosphere() {
+            atmosphericParticles = [];
+            const density = Math.min(60, Math.floor(window.innerWidth / 20));
+            for (let i = 0; i < density; i++) {
+                const particle = new CelestialDrifter();
+                particle.y = Math.random() * grainCanvas.height;
+                atmosphericParticles.push(particle);
+            }
+        }
+
+        function runAtmosphereLoop() {
+            canvasCtx.clearRect(0, 0, grainCanvas.width, grainCanvas.height);
+            canvasCtx.shadowBlur = 0;
+
+            atmosphericParticles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+
+            trailParticles.forEach((p, index) => {
+                p.update();
+                p.draw();
+                if (p.alpha <= 0) {
+                    trailParticles.splice(index, 1);
+                }
+            });
+
+            requestAnimationFrame(runAtmosphereLoop);
+        }
+
+        buildAtmosphere();
+        runAtmosphereLoop();
+
+        window.addEventListener('load', () => {
+            gsap.registerPlugin(ScrollTrigger);
+
+            const timeline = gsap.timeline();
+            timeline.to('.hero-initial', { scale: 1.1, opacity: 1, duration: 2.2, ease: 'power3.out' })
+                    .to('.hero-name', { opacity: 1, y: 0, duration: 1.6, ease: 'power4.out' }, '-=1.8')
+                    .to('.hero-headline', { opacity: 1, y: 0, duration: 1.4, ease: 'power3.out' }, '-=1.3')
+                    .to('.hero-desc', { opacity: 1, y: 0, duration: 1.4, ease: 'power3.out' }, '-=1.3')
+                    .to('.btn-luxury', { opacity: 1, y: 0, duration: 1.4, ease: 'power3.out' }, '-=1.3');
+
+            gsap.from('.narrative-content', {
+                scrollTrigger: {
+                    trigger: '.editorial-grid',
+                    start: 'top 80%',
+                    toggleActions: 'play none none none'
+                },
+                opacity: 0,
+                y: 60,
+                duration: 1.6,
+                ease: 'power3.out'
+            });
+
+            gsap.from('.art-frame', {
+                scrollTrigger: {
+                    trigger: '.editorial-grid',
+                    start: 'top 82%',
+                    toggleActions: 'play none none none'
+                },
+                scale: 0.96,
+                opacity: 0,
+                duration: 1.8,
+                ease: 'power3.out'
+            });
+
+            gsap.from('.art-overlay-badge', {
+                scrollTrigger: {
+                    trigger: '.editorial-grid',
+                    start: 'top 65%',
+                    toggleActions: 'play none none none'
+                },
+                x: 50,
+                opacity: 0,
+                duration: 1.5,
+                ease: 'power3.out'
+            });
+
+            gsap.from('.resonance-details', {
+                scrollTrigger: {
+                    trigger: '.resonance-row',
+                    start: 'top 80%',
+                    toggleActions: 'play none none none'
+                },
+                opacity: 0,
+                y: 60,
+                duration: 1.6,
+                ease: 'power3.out'
+            });
+
+            gsap.from('.resonance-media', {
+                scrollTrigger: {
+                    trigger: '.resonance-row',
+                    start: 'top 80%',
+                    toggleActions: 'play none none none'
+                },
+                scale: 0.9,
+                opacity: 0,
+                duration: 1.8,
+                ease: 'power3.out'
+            });
+
+            gsap.from('.constellation-node', {
+                scrollTrigger: {
+                    trigger: '.qualities-constellation-section',
+                    start: 'top 75%'
+                },
+                opacity: 0,
+                y: 50,
+                stagger: 0.15,
+                duration: 1.4,
+                ease: 'power3.out'
+            });
+
+            gsap.from('.highlight-accent-sec', {
+                scrollTrigger: {
+                    trigger: '.highlight-accent-sec',
+                    start: 'top 80%'
+                },
+                opacity: 0,
+                y: 40,
+                duration: 1.5,
+                ease: 'power3.out'
+            });
+
+            gsap.from('.climax-container', {
+                scrollTrigger: {
+                    trigger: '.climax-letter-section',
+                    start: 'top 80%'
+                },
+                opacity: 0,
+                y: 70,
+                duration: 2,
+                ease: 'power3.out'
+            });
+
+            renderDeck();
+        });
+    </script>
+</body>
+</html>
